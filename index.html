@@ -4,13 +4,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weatherly - Check live weather and forecasts for cities around the world.">
     <title>Weatherly | Weather Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Weatherly</h1>
-    <p>Your personal weather dashboard</p>
+    <header class="navbar">
+        <div class="logo">Weatherly<span>.</span></div>
+
+        <nav>
+            <a href="#home" class="active">Home</a>
+            <a href="#forecast">Forecast</a>
+        </nav>
+
+        <button id="themeToggle" aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </header>
+
+    <main id="home" class="container">
+
+        <section class="welcome">
+            <h1>Weather Dashboard</h1>
+            <p>Check the weather conditions in your city.</p>
+        </section>
+
+        <section class="search-section">
+            <input
+                type="text"
+                id="cityInput"
+                placeholder="Enter city name..."
+                aria-label="Enter city name"
+            >
+            <button id="searchBtn">Search</button>
+        </section>
+
+        <p id="statusMessage" role="status"></p>
+
+        <section class="current-weather">
+            <div class="weather-heading">
+                <div>
+                    <p>Current Weather</p>
+                    <h2 id="cityName">Search a city</h2>
+                </div>
+                <div class="weather-icon" id="weatherIcon">🌤️</div>
+            </div>
+
+            <div class="temperature">
+                <h1 id="temperature">--°C</h1>
+                <p id="weatherCondition">Weather condition</p>
+            </div>
+
+            <div class="weather-details">
+                <article class="detail-card">
+                    <span>💨</span>
+                    <p>Wind Speed</p>
+                    <h3 id="windSpeed">-- km/h</h3>
+                </article>
+
+                <article class="detail-card">
+                    <span>🌡️</span>
+                    <p>Feels Like</p>
+                    <h3 id="feelsLike">--°C</h3>
+                </article>
+
+                <article class="detail-card">
+                    <span>💧</span>
+                    <p>Humidity</p>
+                    <h3 id="humidity">--%</h3>
+                </article>
+            </div>
+        </section>
+
+        <section id="forecast" class="forecast-section">
+            <h2>5-Day Forecast</h2>
+
+            <div id="forecastContainer" class="forecast-container">
+                <p>Search for a city to see the forecast.</p>
+            </div>
+        </section>
+
+        <section class="recent-section">
+            <h2>Recent Searches</h2>
+            <div id="recentSearches">
+                <p>No recent searches yet.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Weatherly. Built with HTML, CSS & JavaScript.</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>

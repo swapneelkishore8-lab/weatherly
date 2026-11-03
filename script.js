@@ -1,2 +1,1 @@
-
-console.log("Weatherly project initialized!");
+console.log("Weatherly dashboard UI loaded successfully!");
