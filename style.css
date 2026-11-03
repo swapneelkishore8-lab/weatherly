@@ -1,5 +1,5 @@
 
-/* ===== GLOBAL STYLES ===== */
+
 * {
     margin: 0;
     padding: 0;
@@ -34,7 +34,7 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-/* ===== NAVBAR ===== */
+
 .navbar {
     display: flex;
     align-items: center;
@@ -78,7 +78,7 @@ body {
     font-size: 18px;
 }
 
-/* ===== MAIN CONTAINER ===== */
+
 .container {
     max-width: 1100px;
     width: 90%;
@@ -100,7 +100,7 @@ body {
     color: var(--muted);
 }
 
-/* ===== SEARCH ===== */
+
 .search-section {
     display: flex;
     gap: 12px;
@@ -141,7 +141,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* ===== CURRENT WEATHER ===== */
+
 .current-weather {
     background: var(--surface);
     padding: 30px;
@@ -179,7 +179,7 @@ body {
     margin-top: 8px;
 }
 
-/* ===== WEATHER DETAILS ===== */
+
 .weather-details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -206,7 +206,7 @@ body {
     font-size: 20px;
 }
 
-/* ===== FORECAST ===== */
+
 .forecast-section,
 .recent-section {
     margin-top: 40px;
@@ -246,7 +246,7 @@ body {
     font-size: 30px;
 }
 
-/* ===== FOOTER ===== */
+
 footer {
     text-align: center;
     padding: 25px;
@@ -254,7 +254,7 @@ footer {
     border-top: 1px solid var(--border);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+
 @media (max-width: 768px) {
     .navbar {
         padding: 18px 5%;
