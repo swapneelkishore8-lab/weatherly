@@ -2,16 +2,17 @@
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
 const statusMessage = document.getElementById("statusMessage");
+const themeToggle = document.getElementById("themeToggle");
+const recentSearches = document.getElementById("recentSearches");
+const clearHistoryBtn = document.getElementById("clearHistory");
 
 const cityName = document.getElementById("cityName");
 const temperature = document.getElementById("temperature");
 const weatherCondition = document.getElementById("weatherCondition");
 const weatherIcon = document.getElementById("weatherIcon");
-
 const windSpeed = document.getElementById("windSpeed");
 const feelsLike = document.getElementById("feelsLike");
 const humidity = document.getElementById("humidity");
-
 const forecastContainer = document.getElementById("forecastContainer");
 
 const weatherTypes = {
@@ -38,8 +39,81 @@ const weatherTypes = {
     99: ["Heavy Thunderstorm", "⛈️"]
 };
 
+let searchHistory = JSON.parse(
+    localStorage.getItem("weatherHistory") || "[]"
+);
+
 function getWeatherInfo(code) {
     return weatherTypes[code] || ["Unknown Weather", "🌡️"];
+}
+
+function saveHistory() {
+    localStorage.setItem(
+        "weatherHistory",
+        JSON.stringify(searchHistory)
+    );
+}
+
+function addRecentSearch(city) {
+    searchHistory = [
+        city,
+        ...searchHistory.filter(
+            item => item.toLowerCase() !== city.toLowerCase()
+        )
+    ].slice(0, 5);
+
+    saveHistory();
+    renderRecentSearches();
+}
+
+function renderRecentSearches() {
+    recentSearches.replaceChildren();
+
+    if (searchHistory.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "No recent searches yet.";
+        recentSearches.appendChild(message);
+        return;
+    }
+
+    searchHistory.forEach(city => {
+        const item = document.createElement("div");
+        item.className = "recent-item";
+
+        const searchButton = document.createElement("button");
+        searchButton.className = "recent-city";
+        searchButton.textContent = city;
+        searchButton.addEventListener("click", () => {
+            cityInput.value = city;
+            searchWeather();
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "remove-city";
+        removeButton.textContent = "×";
+        removeButton.setAttribute("aria-label", `Remove ${city}`);
+        removeButton.addEventListener("click", () => {
+            searchHistory = searchHistory.filter(
+                item => item !== city
+            );
+            saveHistory();
+            renderRecentSearches();
+        });
+
+        item.append(searchButton, removeButton);
+        recentSearches.appendChild(item);
+    });
+}
+
+function setTheme(theme) {
+    document.body.classList.toggle("dark-mode", theme === "dark");
+    themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    localStorage.setItem("weatherTheme", theme);
+}
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem("weatherTheme") || "light";
+    setTheme(savedTheme);
 }
 
 async function getCityCoordinates(city) {
@@ -108,9 +182,16 @@ function displayForecast(data) {
         conditionElement.textContent = condition;
 
         const temperatureElement = document.createElement("h3");
-        temperatureElement.textContent = `${Math.round(data.daily.temperature_2m_max[index])}° / ${Math.round(data.daily.temperature_2m_min[index])}°`;
+        temperatureElement.textContent =
+            `${Math.round(data.daily.temperature_2m_max[index])}° / ${Math.round(data.daily.temperature_2m_min[index])}°`;
 
-        card.append(dayElement, iconElement, conditionElement, temperatureElement);
+        card.append(
+            dayElement,
+            iconElement,
+            conditionElement,
+            temperatureElement
+        );
+
         forecastContainer.appendChild(card);
     });
 }
@@ -120,6 +201,13 @@ async function searchWeather() {
 
     if (!city) {
         statusMessage.textContent = "Please enter a city name.";
+        cityInput.focus();
+        return;
+    }
+
+    if (!/^[a-zA-Z\s.'-]+$/.test(city)) {
+        statusMessage.textContent = "Please enter a valid city name.";
+        cityInput.focus();
         return;
     }
 
@@ -128,10 +216,14 @@ async function searchWeather() {
 
     try {
         const location = await getCityCoordinates(city);
-        const weatherData = await getWeatherData(location.latitude, location.longitude);
+        const weatherData = await getWeatherData(
+            location.latitude,
+            location.longitude
+        );
 
         displayCurrentWeather(location, weatherData);
         displayForecast(weatherData);
+        addRecentSearch(location.name);
 
         statusMessage.textContent = `Weather updated for ${location.name}.`;
     } catch (error) {
@@ -143,8 +235,25 @@ async function searchWeather() {
 
 searchBtn.addEventListener("click", searchWeather);
 
-cityInput.addEventListener("keydown", (event) => {
+cityInput.addEventListener("keydown", event => {
     if (event.key === "Enter") {
         searchWeather();
     }
 });
+
+themeToggle.addEventListener("click", () => {
+    const currentTheme = document.body.classList.contains("dark-mode")
+        ? "dark"
+        : "light";
+
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+});
+
+clearHistoryBtn.addEventListener("click", () => {
+    searchHistory = [];
+    saveHistory();
+    renderRecentSearches();
+});
+
+initializeTheme();
+renderRecentSearches();
